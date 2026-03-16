@@ -1,53 +1,74 @@
+function onTypeChange() {
+    const type = document.getElementById('typeSelect').value;
+    const lvlLabel = document.getElementById('lvlLabel');
+    const lvlWidth = document.getElementById('lvlWidth');
+    if (type === '建具') {
+        lvlLabel.textContent = '縦桟/上下桟 幅 (LVL)';
+        lvlWidth.value = 35;
+    } else {
+        lvlLabel.textContent = '縦桟/上下桟 幅 (ランバー)';
+        lvlWidth.value = 50;
+    }
+    calculate();
+}
+
 function calculate() {
     // 入力値取得 (空文字対策)
     const rawH = parseFloat(document.getElementById('h').value) || 0;
     const rawW = parseFloat(document.getElementById('w').value) || 0;
     const LVL = parseFloat(document.getElementById('lvlWidth').value) || 0;
     const NUKI = parseFloat(document.getElementById('nukiWidth').value) || 0;
-    const PITCH = parseFloat(document.getElementById('pitch').value) || 1;
+    const N = parseInt(document.getElementById('nukiCount').value) || 0;
     const hikite = document.getElementById('optHikite').checked;
+    const type = document.getElementById('typeSelect').value;
+    const mat = type === '建具' ? 'LVL' : 'ランバー';
 
     if (rawH === 0 || rawW === 0) return;
 
-    // 芯の製作寸法 (カット寸法をそのまま使用)
-    const H = rawH;
-    const W = rawW;
+    // 芯の製作寸法 (カット寸法 + 10mm)
+    const H = rawH + 10;
+    const W = rawW + 10;
 
     // サマリー表示
     document.getElementById('calcSummary').innerHTML =
+        `<strong>カット寸法:</strong> 高 ${rawH}mm × 幅 ${rawW}mm<br>` +
         `<strong>芯の製作寸法:</strong> 高 ${H}mm × 幅 ${W}mm`;
 
     const list = [];
 
     // 1. 縦桟 (縦勝ち)
-    list.push({ name: "縦桟 (LVL)", len: H, qty: 2, note: "外周左右 (通し材)" });
+    list.push({ name: `縦桟 (${mat})`, len: H, qty: 2, note: "外周左右 (通し材)" });
 
     // 2. 上下桟 (横材)
     const yokoLen = W - (LVL * 2);
-    list.push({ name: "上下桟 (LVL)", len: yokoLen, qty: 2, note: "外周上下 (中入れ材)" });
+    list.push({ name: `上下桟 (${mat})`, len: yokoLen, qty: 2, note: "外周上下 (中入れ材)" });
 
     // 3. 引手補強
     const hikiteH = 300;
     const hikiteCenter = 900;
-    // 芯材寸法に基づいた相対位置（下端からの位置。切り代があるため微調整が必要な場合もありますが、一旦芯材下端基準）
     const hTop = H - (hikiteCenter + hikiteH / 2);
     const hBottom = H - (hikiteCenter - hikiteH / 2);
 
     if (hikite) {
-        list.push({ name: "引手補強 (LVL)", len: hikiteH, qty: 4, note: "左右各2本 (FL+900芯目安)" });
+        list.push({ name: `引手補強 (${mat})`, len: hikiteH, qty: 4, note: "左右各2本 (FL+900芯目安)" });
     }
 
-    // 4. 中桟 (貫)
+    // 4. 中桟 (貫) — 本数指定・等間隔センター配置
     const activeH = H - (LVL * 2);
-    const nukiCount = Math.floor(activeH / PITCH);
-    const realPitch = activeH / (nukiCount + 1);
+    const realPitch = N > 0 ? activeH / (N + 1) : 0;
+    const centerY = LVL + activeH / 2;
+
+    const nukiPositions = [];
+    for (let i = 0; i < N; i++) {
+        const yPos = centerY + (i - (N - 1) / 2) * realPitch;
+        nukiPositions.push(yPos);
+    }
 
     let standardNukiQty = 0;
     let shortNukiQty = 0;
     const shortNukiLen = yokoLen - (LVL * 4);
 
-    for (let i = 1; i <= nukiCount; i++) {
-        const yPos = LVL + (i * realPitch);
+    for (const yPos of nukiPositions) {
         if (hikite && yPos >= hTop && yPos <= hBottom) {
             shortNukiQty++;
         } else {
@@ -63,7 +84,7 @@ function calculate() {
     }
 
     renderTable(list);
-    drawDoor(H, W, LVL, NUKI, nukiCount, realPitch, hikite, hTop, hikiteH);
+    drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hikiteH);
 }
 
 function renderTable(list) {
@@ -78,7 +99,7 @@ function renderTable(list) {
     `).join('');
 }
 
-function drawDoor(H, W, LVL, NUKI, nCount, pitch, hikite, hTop, hLen) {
+function drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hLen) {
     const canvas = document.getElementById('doorCanvas');
     const ctx = canvas.getContext('2d');
     const scale = Math.min(400 / H, 300 / W);
@@ -107,8 +128,7 @@ function drawDoor(H, W, LVL, NUKI, nCount, pitch, hikite, hTop, hLen) {
 
     // 中桟
     ctx.fillStyle = "#bbb";
-    for (let i = 1; i <= nCount; i++) {
-        const y = (LVL + i * pitch);
+    for (const y of nukiPositions) {
         if (hikite && y >= hTop && y <= (hTop + hLen)) {
             ctx.fillRect((LVL * 3) * scale, y * scale, (W - LVL * 6) * scale, NUKI * scale);
         } else {

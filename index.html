@@ -27,16 +27,23 @@
 
         <h2>2. 芯材設定 (mm)</h2>
         <div class="input-group">
-            <label>縦桟/上下桟 幅 (LVL)</label>
-            <input type="number" id="lvlWidth" value="35.5" oninput="calculate()">
+            <label>建具種別</label>
+            <select id="typeSelect" onchange="onTypeChange()">
+                <option value="建具">建具</option>
+                <option value="家具">家具</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label id="lvlLabel">縦桟/上下桟 幅 (LVL)</label>
+            <input type="number" id="lvlWidth" value="35" oninput="calculate()">
         </div>
         <div class="input-group">
             <label>中桟（貫） 幅</label>
             <input type="number" id="nukiWidth" value="24" oninput="calculate()">
         </div>
         <div class="input-group">
-            <label>中桟ピッチ (基準)</label>
-            <input type="number" id="pitch" value="300" oninput="calculate()">
+            <label>中桟本数</label>
+            <input type="number" id="nukiCount" value="5" min="0" oninput="calculate()">
         </div>
 
         <h2>3. 補強オプション</h2>
