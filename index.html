@@ -8,94 +8,126 @@
 </head>
 <body>
 
-<h1>芯組みシミュレーター Ver.1.3</h1>
+<header class="app-header">
+    <h1>芯組みシミュレーター</h1>
+    <span class="version">Ver.1.3</span>
+</header>
 
-<div class="container">
-    <div class="panel">
-        <h2>1. カット寸法設定 (mm)</h2>
-        <div class="input-group">
-            <label>カット 高さ (H)</label>
-            <input type="number" inputmode="decimal" id="h" value="2000" oninput="calculate()">
-        </div>
-        <div class="input-group">
-            <label>カット 幅 (W)</label>
-            <input type="number" inputmode="decimal" id="w" value="900" oninput="calculate()">
-        </div>
-        <div class="input-group">
-            <label>仕上 厚み (D)</label>
-            <input type="number" inputmode="decimal" id="d" value="30" oninput="calculate()">
-        </div>
+<main class="tab-content">
+    <!-- タブ1: 入力設定 -->
+    <section id="tab-input" class="tab-panel active">
+        <div class="panel">
+            <h2>1. カット寸法設定 (mm)</h2>
+            <div class="input-group">
+                <label>カット 高さ (H)</label>
+                <input type="number" inputmode="decimal" id="h" value="2000" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>カット 幅 (W)</label>
+                <input type="number" inputmode="decimal" id="w" value="900" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>仕上 厚み (D)</label>
+                <input type="number" inputmode="decimal" id="d" value="30" oninput="calculate()">
+            </div>
 
-        <h2>2. 芯材設定 (mm)</h2>
-        <div class="input-group">
-            <label>建具種別</label>
-            <select id="typeSelect" onchange="onTypeChange()">
-                <option value="建具">建具</option>
-                <option value="家具">家具</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label id="lvlLabel">縦桟/上下桟 幅 (LVL)</label>
-            <input type="number" inputmode="decimal" id="lvlWidth" value="35" oninput="calculate()">
-        </div>
-        <div class="input-group">
-            <label>中桟（貫） 幅</label>
-            <input type="number" inputmode="decimal" id="nukiWidth" value="24" oninput="calculate()">
-        </div>
-        <div class="input-group">
-            <label>中桟本数</label>
-            <input type="number" inputmode="numeric" id="nukiCount" value="5" min="0" oninput="calculate()">
-        </div>
-        <div class="input-group">
-            <label id="boardLenLabel">LVL 定尺長さ</label>
-            <input type="number" inputmode="decimal" id="boardLen" value="2120" oninput="calculate()">
-        </div>
+            <h2>2. 芯材設定 (mm)</h2>
+            <div class="input-group">
+                <label>建具種別</label>
+                <select id="typeSelect" onchange="onTypeChange()">
+                    <option value="建具">建具</option>
+                    <option value="家具">家具</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label id="lvlLabel">縦桟/上下桟 幅 (LVL)</label>
+                <input type="number" inputmode="decimal" id="lvlWidth" value="35" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>中桟（貫） 幅</label>
+                <input type="number" inputmode="decimal" id="nukiWidth" value="24" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>中桟本数</label>
+                <input type="number" inputmode="numeric" id="nukiCount" value="5" min="0" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label id="boardLenLabel">LVL 定尺長さ</label>
+                <input type="number" inputmode="decimal" id="boardLen" value="2120" oninput="calculate()">
+            </div>
 
-        <h2>3. 補強オプション</h2>
-        <div class="input-group">
-            <input type="checkbox" id="optHikite" checked onchange="calculate()">
-            <label style="display:inline">引手補強 (左右各2本/H900芯)</label>
-        </div>
-    </div>
-
-    <div class="panel">
-        <div class="info-box" id="calcSummary"></div>
-
-        <div id="canvas-container">
-            <canvas id="doorCanvas"></canvas>
+            <h2>3. 補強オプション</h2>
+            <div class="input-group checkbox-group">
+                <input type="checkbox" id="optHikite" checked onchange="calculate()">
+                <label for="optHikite">引手補強 (左右各2本/H900芯)</label>
+            </div>
         </div>
 
-        <h2>木取りリスト (芯材製作寸法)</h2>
-        <div class="table-wrapper">
-            <table class="result-table">
-                <thead>
-                    <tr>
-                        <th>部材名</th>
-                        <th>寸法 (長さ)</th>
-                        <th>本数</th>
-                        <th>備考</th>
-                    </tr>
-                </thead>
-                <tbody id="resultBody"></tbody>
-            </table>
-        </div>
+        <button class="cta-button" onclick="switchTab('result')">
+            結果を見る
+            <span class="cta-arrow">→</span>
+        </button>
+    </section>
 
-        <h2 id="procurementTitle">材料手配リスト (LVL 2120mm)</h2>
-        <div class="table-wrapper">
-            <table class="result-table">
-                <thead>
-                    <tr>
-                        <th>部材名</th>
-                        <th>パーツ長さ</th>
-                        <th>1本取り数</th>
-                        <th>必要本数</th>
-                    </tr>
-                </thead>
-                <tbody id="procurementBody"></tbody>
-            </table>
+    <!-- タブ2: 結果・プレビュー -->
+    <section id="tab-result" class="tab-panel">
+        <div class="panel">
+            <div class="info-box" id="calcSummary"></div>
+
+            <div id="canvas-container">
+                <canvas id="doorCanvas"></canvas>
+            </div>
+
+            <h2>木取りリスト (芯材製作寸法)</h2>
+            <div class="table-wrapper">
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>部材名</th>
+                            <th>寸法</th>
+                            <th>本数</th>
+                            <th>備考</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultBody"></tbody>
+                </table>
+            </div>
+
+            <h2 id="procurementTitle">材料手配リスト (LVL 2120mm)</h2>
+            <div class="table-wrapper">
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>部材名</th>
+                            <th>パーツ長さ</th>
+                            <th>1本取り</th>
+                            <th>必要本数</th>
+                        </tr>
+                    </thead>
+                    <tbody id="procurementBody"></tbody>
+                </table>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
+</main>
+
+<!-- ボトムナビゲーション -->
+<nav class="bottom-nav">
+    <button class="nav-item active" id="nav-input" onclick="switchTab('input')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/>
+            <line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/>
+        </svg>
+        <span>入力</span>
+    </button>
+    <button class="nav-item" id="nav-result" onclick="switchTab('result')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <polyline points="8,12 11,15 16,9"/>
+        </svg>
+        <span>結果</span>
+    </button>
+</nav>
 
 <script src="shingumi.js"></script>
 </body>

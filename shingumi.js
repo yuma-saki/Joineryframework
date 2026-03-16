@@ -1,3 +1,11 @@
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('tab-' + tabName).classList.add('active');
+    document.getElementById('nav-' + tabName).classList.add('active');
+    window.scrollTo(0, 0);
+}
+
 function onTypeChange() {
     const type = document.getElementById('typeSelect').value;
     const lvlLabel = document.getElementById('lvlLabel');
