@@ -2,7 +2,6 @@ function calculate() {
     // 入力値取得 (空文字対策)
     const rawH = parseFloat(document.getElementById('h').value) || 0;
     const rawW = parseFloat(document.getElementById('w').value) || 0;
-    const koguchi = parseFloat(document.getElementById('koguchi').value) || 0;
     const LVL = parseFloat(document.getElementById('lvlWidth').value) || 0;
     const NUKI = parseFloat(document.getElementById('nukiWidth').value) || 0;
     const PITCH = parseFloat(document.getElementById('pitch').value) || 1;
@@ -10,15 +9,13 @@ function calculate() {
 
     if (rawH === 0 || rawW === 0) return;
 
-    // 芯の製作寸法計算 (仕上 - 小口×2 + 切り代10)
-    const cutMargin = 10;
-    const H = rawH - (koguchi * 2) + cutMargin;
-    const W = rawW - (koguchi * 2) + cutMargin;
+    // 芯の製作寸法 (カット寸法をそのまま使用)
+    const H = rawH;
+    const W = rawW;
 
     // サマリー表示
     document.getElementById('calcSummary').innerHTML =
-        `<strong>芯の製作寸法:</strong> 高 ${H}mm × 幅 ${W}mm<br>` +
-        `<small>(仕上から小口${koguchi * 2}mmをマイナスし、切り代${cutMargin}mmを加算)</small>`;
+        `<strong>芯の製作寸法:</strong> 高 ${H}mm × 幅 ${W}mm`;
 
     const list = [];
 
