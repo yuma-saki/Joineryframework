@@ -1,5 +1,8 @@
 :root { --primary: #2c3e50; --accent: #27ae60; --warning: #e67e22; --bg: #f4f7f6; }
 body { font-family: sans-serif; background: var(--bg); margin: 20px; color: var(--primary); }
+.mode-selector { max-width: 1100px; margin: 0 auto 16px; background: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; gap: 24px; align-items: center; font-size: 1rem; font-weight: bold; }
+.mode-selector label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--primary); font-size: 1rem; margin: 0; }
+.mode-selector input[type="radio"] { width: auto; accent-color: var(--accent); }
 .container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
 .panel { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 h1, h2 { border-bottom: 2px solid var(--accent); padding-bottom: 5px; font-size: 1.1rem; margin-top: 0; }

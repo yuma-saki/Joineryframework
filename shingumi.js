@@ -2,12 +2,18 @@ function onTypeChange() {
     const type = document.getElementById('typeSelect').value;
     const lvlLabel = document.getElementById('lvlLabel');
     const lvlWidth = document.getElementById('lvlWidth');
+    const boardLenInput = document.getElementById('boardLen');
+    const boardLenLabel = document.getElementById('boardLenLabel');
     if (type === '建具') {
         lvlLabel.textContent = '縦桟/上下桟 幅 (LVL)';
         lvlWidth.value = 35;
+        boardLenLabel.textContent = 'LVL 定尺長さ';
+        boardLenInput.value = 2120;
     } else {
         lvlLabel.textContent = '縦桟/上下桟 幅 (ランバー)';
         lvlWidth.value = 50;
+        boardLenLabel.textContent = 'ランバー 定尺長さ';
+        boardLenInput.value = 1820;
     }
     calculate();
 }
@@ -22,6 +28,7 @@ function calculate() {
     const hikite = document.getElementById('optHikite').checked;
     const type = document.getElementById('typeSelect').value;
     const mat = type === '建具' ? 'LVL' : 'ランバー';
+    const boardLen = parseFloat(document.getElementById('boardLen').value) || 0;
 
     if (rawH === 0 || rawW === 0) return;
 
@@ -84,6 +91,7 @@ function calculate() {
     }
 
     renderTable(list);
+    renderProcurement(list, boardLen, type);
     drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hikiteH);
 }
 
@@ -97,6 +105,44 @@ function renderTable(list) {
             <td>${item.note}</td>
         </tr>
     `).join('');
+}
+
+function renderProcurement(list, boardLen, type) {
+    const matLabel = type === '建具' ? 'LVL' : 'ランバー';
+    const title = document.getElementById('procurementTitle');
+    title.textContent = `材料手配リスト (${matLabel} ${boardLen}mm)`;
+
+    const body = document.getElementById('procurementBody');
+    if (boardLen <= 0) {
+        body.innerHTML = '<tr><td colspan="4">定尺長さを入力してください</td></tr>';
+        return;
+    }
+
+    let totalBoards = 0;
+    const rows = list.map(item => {
+        const partLen = parseFloat(item.len);
+        if (partLen <= 0 || partLen > boardLen) {
+            return `<tr><td>${item.name}</td><td class="highlight">${item.len} mm</td><td>-</td><td>パーツ長さが定尺を超えています</td></tr>`;
+        }
+        const perBoard = Math.floor(boardLen / partLen);
+        const boardsNeeded = Math.ceil(item.qty / perBoard);
+        totalBoards += boardsNeeded;
+        return `
+        <tr>
+            <td>${item.name}</td>
+            <td class="highlight">${item.len} mm</td>
+            <td>${perBoard} 本</td>
+            <td class="highlight">${boardsNeeded} 本</td>
+        </tr>`;
+    });
+
+    rows.push(`
+        <tr style="font-weight:bold; border-top: 2px solid #333;">
+            <td colspan="3">合計必要本数</td>
+            <td class="highlight">${totalBoards} 本</td>
+        </tr>`);
+
+    body.innerHTML = rows.join('');
 }
 
 function drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hLen) {

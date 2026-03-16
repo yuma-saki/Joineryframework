@@ -45,6 +45,10 @@
             <label>中桟本数</label>
             <input type="number" id="nukiCount" value="5" min="0" oninput="calculate()">
         </div>
+        <div class="input-group">
+            <label id="boardLenLabel">LVL 定尺長さ</label>
+            <input type="number" id="boardLen" value="2120" oninput="calculate()">
+        </div>
 
         <h2>3. 補強オプション</h2>
         <div class="input-group">
@@ -71,6 +75,19 @@
                 </tr>
             </thead>
             <tbody id="resultBody"></tbody>
+        </table>
+
+        <h2 id="procurementTitle">材料手配リスト (LVL 2120mm)</h2>
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th>部材名</th>
+                    <th>パーツ長さ</th>
+                    <th>1本取り数</th>
+                    <th>必要本数</th>
+                </tr>
+            </thead>
+            <tbody id="procurementBody"></tbody>
         </table>
     </div>
 </div>
