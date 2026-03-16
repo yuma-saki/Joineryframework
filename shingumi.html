@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>芯組みシミュレーター Ver.1.3</title>
+    <link rel="stylesheet" href="shingumi.css">
+</head>
+<body>
+
+<h1>芯組みシミュレーター Ver.1.3</h1>
+
+<div class="container">
+    <div class="panel">
+        <h2>1. 仕上寸法・小口設定 (mm)</h2>
+        <div class="input-group">
+            <label>仕上 高さ (H)</label>
+            <input type="number" id="h" value="2000" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>仕上 幅 (W)</label>
+            <input type="number" id="w" value="900" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>仕上 厚み (D)</label>
+            <input type="number" id="d" value="30" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>小口厚み (片側)</label>
+            <input type="number" id="koguchi" value="10" oninput="calculate()">
+            <div class="calc-note">※両側分差し引き後、切り代+10mm加算</div>
+        </div>
+
+        <h2>2. 芯材設定 (mm)</h2>
+        <div class="input-group">
+            <label>縦桟/上下桟 幅 (LVL)</label>
+            <input type="number" id="lvlWidth" value="35.5" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>中桟（貫） 幅</label>
+            <input type="number" id="nukiWidth" value="24" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>中桟ピッチ (基準)</label>
+            <input type="number" id="pitch" value="300" oninput="calculate()">
+        </div>
+
+        <h2>3. 補強オプション</h2>
+        <div class="input-group">
+            <input type="checkbox" id="optHikite" checked onchange="calculate()">
+            <label style="display:inline">引手補強 (左右各2本/H900芯)</label>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="info-box" id="calcSummary"></div>
+
+        <div id="canvas-container">
+            <canvas id="doorCanvas"></canvas>
+        </div>
+
+        <h2>木取りリスト (芯材製作寸法)</h2>
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th>部材名</th>
+                    <th>寸法 (長さ)</th>
+                    <th>本数</th>
+                    <th>備考</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script src="shingumi.js"></script>
+</body>
+</html>
