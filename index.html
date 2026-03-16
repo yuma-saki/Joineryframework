@@ -55,11 +55,15 @@
                 <label id="boardLenLabel">LVL 定尺長さ</label>
                 <input type="number" inputmode="decimal" id="boardLen" value="2120" oninput="calculate()">
             </div>
+            <div class="input-group">
+                <label>中桟材 定尺長さ</label>
+                <input type="number" inputmode="decimal" id="nukiBoardLen" value="3000" oninput="calculate()">
+            </div>
 
             <h2>3. 補強オプション</h2>
             <div class="input-group checkbox-group">
                 <input type="checkbox" id="optHikite" checked onchange="calculate()">
-                <label for="optHikite">引手補強 (左右各2本/H900芯)</label>
+                <label id="optHikiteLabel" for="optHikite">引手補強 (左右各2本/H900芯)</label>
             </div>
         </div>
 
@@ -93,18 +97,31 @@
                 </table>
             </div>
 
-            <h2 id="procurementTitle">材料手配リスト (LVL 2120mm)</h2>
+            <h2 id="procurementTitle">材料手配リスト — LVL</h2>
             <div class="table-wrapper">
                 <table class="result-table">
                     <thead>
                         <tr>
-                            <th>部材名</th>
-                            <th>パーツ長さ</th>
-                            <th>1本取り</th>
-                            <th>必要本数</th>
+                            <th style="width:2em">No.</th>
+                            <th>カット内容</th>
+                            <th style="white-space:nowrap">残り</th>
                         </tr>
                     </thead>
                     <tbody id="procurementBody"></tbody>
+                </table>
+            </div>
+
+            <h2 id="nukiProcurementTitle">材料手配リスト — 中桟材</h2>
+            <div class="table-wrapper">
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th style="width:2em">No.</th>
+                            <th>カット内容</th>
+                            <th style="white-space:nowrap">残り</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nukiProcurementBody"></tbody>
                 </table>
             </div>
         </div>
