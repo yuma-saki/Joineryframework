@@ -95,6 +95,11 @@ h2:first-child { margin-top: 0; }
 /* ===== 入力フォーム ===== */
 .input-group { margin-bottom: 14px; }
 
+.input-row { display: grid; gap: 10px; margin-bottom: 14px; }
+.input-row-2 { grid-template-columns: 1fr 1fr; }
+.input-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+.input-row .input-group { margin-bottom: 0; }
+
 label {
     display: block;
     font-size: 0.8rem;

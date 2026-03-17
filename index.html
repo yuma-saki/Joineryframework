@@ -18,17 +18,19 @@
     <section id="tab-input" class="tab-panel active">
         <div class="panel">
             <h2>1. カット寸法設定 (mm)</h2>
-            <div class="input-group">
-                <label>カット 高さ (H)</label>
-                <input type="number" inputmode="decimal" id="h" value="2000" oninput="calculate()">
-            </div>
-            <div class="input-group">
-                <label>カット 幅 (W)</label>
-                <input type="number" inputmode="decimal" id="w" value="900" oninput="calculate()">
-            </div>
-            <div class="input-group">
-                <label>仕上 厚み (D)</label>
-                <input type="number" inputmode="decimal" id="d" value="30" oninput="calculate()">
+            <div class="input-row input-row-3">
+                <div class="input-group">
+                    <label>高さ (H)</label>
+                    <input type="number" inputmode="decimal" id="h" value="2000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>幅 (W)</label>
+                    <input type="number" inputmode="decimal" id="w" value="900" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>芯材 厚み (D)</label>
+                    <input type="number" inputmode="decimal" id="d" value="30" oninput="calculate()">
+                </div>
             </div>
 
             <h2>2. 芯材設定 (mm)</h2>
@@ -39,25 +41,29 @@
                     <option value="家具">家具</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label id="lvlLabel">縦桟/上下桟 幅 (LVL)</label>
-                <input type="number" inputmode="decimal" id="lvlWidth" value="35" oninput="calculate()">
+            <div class="input-row input-row-2">
+                <div class="input-group">
+                    <label id="lvlLabel">縦桟/上下桟 幅 (LVL)</label>
+                    <input type="number" inputmode="decimal" id="lvlWidth" value="35" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>中桟 幅</label>
+                    <input type="number" inputmode="decimal" id="nukiWidth" value="24" oninput="calculate()">
+                </div>
             </div>
-            <div class="input-group">
-                <label>中桟（貫） 幅</label>
-                <input type="number" inputmode="decimal" id="nukiWidth" value="24" oninput="calculate()">
-            </div>
-            <div class="input-group">
-                <label>中桟本数</label>
-                <input type="number" inputmode="numeric" id="nukiCount" value="5" min="0" oninput="calculate()">
-            </div>
-            <div class="input-group">
-                <label id="boardLenLabel">LVL 定尺長さ</label>
-                <input type="number" inputmode="decimal" id="boardLen" value="2120" oninput="calculate()">
+            <div class="input-row input-row-2">
+                <div class="input-group">
+                    <label>中桟本数</label>
+                    <input type="number" inputmode="numeric" id="nukiCount" value="5" min="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label id="boardLenLabel">LVL 定尺長さ</label>
+                    <input type="number" inputmode="decimal" id="boardLen" value="2120" oninput="calculate()">
+                </div>
             </div>
             <div class="input-group">
                 <label>中桟材 定尺長さ</label>
-                <input type="number" inputmode="decimal" id="nukiBoardLen" value="3000" oninput="calculate()">
+                <input type="number" inputmode="decimal" id="nukiBoardLen" value="900" oninput="calculate()">
             </div>
 
             <h2>3. 補強オプション</h2>
