@@ -6,6 +6,16 @@ function switchTab(tabName) {
     window.scrollTo(0, 0);
 }
 
+// H・LVL変更時に中桟本数をピッチ300mm以内になるよう自動設定
+function updateDefaultNukiCount() {
+    const rawH = parseFloat(document.getElementById('h').value) || 0;
+    const LVL = parseFloat(document.getElementById('lvlWidth').value) || 0;
+    const activeH = (rawH + 10) - LVL * 2;
+    if (activeH <= 0) return;
+    const recommended = Math.max(0, Math.ceil(activeH / 300) - 1);
+    document.getElementById('nukiCount').value = recommended;
+}
+
 function onTypeChange() {
     const type = document.getElementById('typeSelect').value;
     const lvlLabel = document.getElementById('lvlLabel');
@@ -14,6 +24,8 @@ function onTypeChange() {
     const boardLenLabel = document.getElementById('boardLenLabel');
     const optCheckbox = document.getElementById('optHikite');
     const optLabel = document.getElementById('optHikiteLabel');
+    const tsuridoOption = document.getElementById('tsurido-option');
+    const optTsurido = document.getElementById('optTsurido');
 
     if (type === '建具') {
         lvlLabel.textContent = '縦桟/上下桟 幅 (LVL)';
@@ -22,6 +34,7 @@ function onTypeChange() {
         boardLenInput.value = 2120;
         optLabel.textContent = '引手補強 (左右各2本/H900芯)';
         optCheckbox.checked = true;
+        tsuridoOption.style.display = '';
     } else {
         lvlLabel.textContent = '縦桟/上下桟 幅 (ランバー)';
         lvlWidth.value = 50;
@@ -29,7 +42,10 @@ function onTypeChange() {
         boardLenInput.value = 1820;
         optLabel.textContent = 'ロイヤル補強 (上下桟ダブル)';
         optCheckbox.checked = false;
+        tsuridoOption.style.display = 'none';
+        optTsurido.checked = false;
     }
+    updateDefaultNukiCount();
     calculate();
 }
 
@@ -48,6 +64,7 @@ function calculate() {
     // 建具: 引手補強 / 家具: ロイヤル補強
     const hikite = type === '建具' && optChecked;
     const royal = type === '家具' && optChecked;
+    const tsurido = type === '建具' && document.getElementById('optTsurido').checked;
 
     if (rawH === 0 || rawW === 0) return;
 
@@ -60,12 +77,18 @@ function calculate() {
 
     const list = [];
 
-    // 1. 縦桟
-    list.push({ name: `縦桟 (${mat})`, len: H, qty: 2, note: "外周左右 (通し材)" });
+    // 1. 縦桟 — 吊り戸車時は下桟が横勝ちなので縦桟をLVL分短縮
+    const tateSanLen = tsurido ? H - LVL : H;
+    list.push({ name: `縦桟 (${mat})`, len: tateSanLen, qty: 2,
+        note: tsurido ? "外周左右 (下端短縮・吊り戸車仕様)" : "外周左右 (通し材)" });
 
-    // 2. 上下桟 — ロイヤル補強時はダブル (qty: 4)
+    // 2. 上下桟
     const yokoLen = W - (LVL * 2);
-    if (royal) {
+    if (tsurido) {
+        // 上桟: 中入れ / 下桟: 横勝ち (全幅)
+        list.push({ name: `上桟 (${mat})`, len: yokoLen, qty: 1, note: "上部 (中入れ材)" });
+        list.push({ name: `下桟 (${mat}) 横勝ち`, len: W, qty: 1, note: "下部 全幅 (吊り戸車仕様)" });
+    } else if (royal) {
         list.push({ name: `上下桟 (${mat})`, len: yokoLen, qty: 4, note: "外周上下 ×2 (ロイヤル補強)" });
     } else {
         list.push({ name: `上下桟 (${mat})`, len: yokoLen, qty: 2, note: "外周上下 (中入れ材)" });
@@ -112,7 +135,7 @@ function calculate() {
 
     renderTable(list);
     renderProcurement(list, boardLen, nukiBoardLen, type);
-    drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hikiteH, royal);
+    drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hikiteH, royal, tsurido);
 }
 
 function renderTable(list) {
@@ -234,7 +257,7 @@ function renderProcurement(list, boardLen, nukiBoardLen, type) {
     );
 }
 
-function drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hLen, royal) {
+function drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hLen, royal, tsurido) {
     const canvas = document.getElementById('doorCanvas');
     const ctx = canvas.getContext('2d');
     const scale = Math.min(400 / H, 300 / W);
@@ -244,17 +267,26 @@ function drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hLen, royal) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.translate(20, 20);
 
-    // 縦桟 (通し)
+    // 縦桟 — 吊り戸車時は下桟が横勝ちなのでLVL分短く描く
     ctx.fillStyle = "#ddd";
-    ctx.fillRect(0, 0, LVL * scale, H * scale);
-    ctx.fillRect((W - LVL) * scale, 0, LVL * scale, H * scale);
+    const tateSanH = tsurido ? H - LVL : H;
+    ctx.fillRect(0, 0, LVL * scale, tateSanH * scale);
+    ctx.fillRect((W - LVL) * scale, 0, LVL * scale, tateSanH * scale);
 
-    // 上下桟 (1枚目)
+    // 上桟 (常に中入れ)
     ctx.fillStyle = "#ccc";
     ctx.fillRect(LVL * scale, 0, (W - LVL * 2) * scale, LVL * scale);
-    ctx.fillRect(LVL * scale, (H - LVL) * scale, (W - LVL * 2) * scale, LVL * scale);
 
-    // ロイヤル補強: 2枚目の上下桟を濃い色で重ねる
+    // 下桟 — 吊り戸車: 横勝ち(全幅) / 通常: 中入れ
+    if (tsurido) {
+        ctx.fillStyle = "#a8d5b5";
+        ctx.fillRect(0, (H - LVL) * scale, W * scale, LVL * scale);
+    } else {
+        ctx.fillStyle = "#ccc";
+        ctx.fillRect(LVL * scale, (H - LVL) * scale, (W - LVL * 2) * scale, LVL * scale);
+    }
+
+    // ロイヤル補強: 2枚目の上下桟を重ねる
     if (royal) {
         ctx.fillStyle = "rgba(39, 174, 96, 0.45)";
         ctx.fillRect(LVL * scale, LVL * scale, (W - LVL * 2) * scale, LVL * scale);
@@ -283,4 +315,5 @@ function drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hLen, royal) {
     ctx.strokeRect(0, 0, W * scale, H * scale);
 }
 
+updateDefaultNukiCount();
 calculate();

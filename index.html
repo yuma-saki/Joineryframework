@@ -21,7 +21,7 @@
             <div class="input-row input-row-3">
                 <div class="input-group">
                     <label>高さ (H)</label>
-                    <input type="number" inputmode="decimal" id="h" value="2000" oninput="calculate()">
+                    <input type="number" inputmode="decimal" id="h" value="2000" oninput="updateDefaultNukiCount(); calculate()">
                 </div>
                 <div class="input-group">
                     <label>幅 (W)</label>
@@ -44,7 +44,7 @@
             <div class="input-row input-row-2">
                 <div class="input-group">
                     <label id="lvlLabel">縦桟/上下桟 幅 (LVL)</label>
-                    <input type="number" inputmode="decimal" id="lvlWidth" value="35" oninput="calculate()">
+                    <input type="number" inputmode="decimal" id="lvlWidth" value="35" oninput="updateDefaultNukiCount(); calculate()">
                 </div>
                 <div class="input-group">
                     <label>中桟 幅</label>
@@ -70,6 +70,10 @@
             <div class="input-group checkbox-group">
                 <input type="checkbox" id="optHikite" checked onchange="calculate()">
                 <label id="optHikiteLabel" for="optHikite">引手補強 (左右各2本/H900芯)</label>
+            </div>
+            <div class="input-group checkbox-group" id="tsurido-option">
+                <input type="checkbox" id="optTsurido" onchange="calculate()">
+                <label for="optTsurido">吊り戸車補強 (下桟 横勝ち)</label>
             </div>
         </div>
 
