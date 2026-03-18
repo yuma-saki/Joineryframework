@@ -107,32 +107,52 @@
                 </table>
             </div>
 
-            <h2 id="procurementTitle">材料手配リスト — LVL</h2>
-            <div class="table-wrapper">
-                <table class="result-table">
-                    <thead>
-                        <tr>
-                            <th style="width:2em">No.</th>
-                            <th>カット内容</th>
-                            <th style="white-space:nowrap">残り</th>
-                        </tr>
-                    </thead>
-                    <tbody id="procurementBody"></tbody>
-                </table>
+            <div class="procurement-card" id="procurementCard">
+                <button class="procurement-summary" onclick="toggleProcurement('procurementCard')">
+                    <div class="procurement-summary-left">
+                        <span class="procurement-label" id="procurementTitle">材料手配リスト — LVL</span>
+                        <span class="procurement-total" id="procurementTotal">— 本</span>
+                    </div>
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="procurement-detail" id="procurementDetail">
+                    <div class="table-wrapper">
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:2em">No.</th>
+                                    <th>カット内容</th>
+                                    <th style="white-space:nowrap">残り</th>
+                                </tr>
+                            </thead>
+                            <tbody id="procurementBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            <h2 id="nukiProcurementTitle">材料手配リスト — 中桟材</h2>
-            <div class="table-wrapper">
-                <table class="result-table">
-                    <thead>
-                        <tr>
-                            <th style="width:2em">No.</th>
-                            <th>カット内容</th>
-                            <th style="white-space:nowrap">残り</th>
-                        </tr>
-                    </thead>
-                    <tbody id="nukiProcurementBody"></tbody>
-                </table>
+            <div class="procurement-card" id="nukiProcurementCard">
+                <button class="procurement-summary" onclick="toggleProcurement('nukiProcurementCard')">
+                    <div class="procurement-summary-left">
+                        <span class="procurement-label" id="nukiProcurementTitle">材料手配リスト — 中桟材</span>
+                        <span class="procurement-total" id="nukiProcurementTotal">— 本</span>
+                    </div>
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="procurement-detail" id="nukiProcurementDetail">
+                    <div class="table-wrapper">
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:2em">No.</th>
+                                    <th>カット内容</th>
+                                    <th style="white-space:nowrap">残り</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nukiProcurementBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

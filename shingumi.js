@@ -1,3 +1,7 @@
+function toggleProcurement(cardId) {
+    document.getElementById(cardId).classList.toggle('open');
+}
+
 function switchTab(tabName) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -188,19 +192,23 @@ function binPackFFD(list, boardLen) {
 }
 
 function renderProcurementSection(titleId, bodyId, list, boardLen, label) {
-    document.getElementById(titleId).textContent = `材料手配リスト — ${label}`;
+    document.getElementById(titleId).textContent = label;
+    const totalEl = document.getElementById(bodyId.replace('Body', 'Total'));
     const body = document.getElementById(bodyId);
 
     if (list.length === 0) {
+        if (totalEl) totalEl.textContent = '0 本';
         body.innerHTML = '<tr><td colspan="3" style="color:var(--text-secondary)">対象部材なし</td></tr>';
         return;
     }
     if (boardLen <= 0) {
+        if (totalEl) totalEl.textContent = '— 本';
         body.innerHTML = '<tr><td colspan="3">定尺長さを入力してください</td></tr>';
         return;
     }
 
     const { bins, oversized } = binPackFFD(list, boardLen);
+    if (totalEl) totalEl.textContent = `${bins.length} 本`;
     const rows = [];
 
     bins.forEach((bin, i) => {
@@ -248,12 +256,12 @@ function renderProcurement(list, boardLen, nukiBoardLen, type) {
     renderProcurementSection(
         'procurementTitle', 'procurementBody',
         mainList, boardLen,
-        `${matLabel} 定尺${boardLen}mm`
+        `${matLabel} (定尺 ${boardLen}mm)`
     );
     renderProcurementSection(
         'nukiProcurementTitle', 'nukiProcurementBody',
         nukiList, nukiBoardLen,
-        `中桟材 定尺${nukiBoardLen}mm`
+        `中桟材 (定尺 ${nukiBoardLen}mm)`
     );
 }
 

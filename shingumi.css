@@ -253,6 +253,67 @@ canvas {
 
 .highlight { color: #d35400; font-weight: 700; }
 
+/* ===== 材料手配アコーディオン ===== */
+.procurement-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 14px;
+}
+
+.procurement-summary {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: #f4f6f8;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    gap: 8px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.procurement-summary:active { background: #e8ecf0; }
+
+.procurement-summary-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.procurement-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+.procurement-total {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.toggle-icon {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.procurement-card.open .toggle-icon { transform: rotate(180deg); }
+
+.procurement-detail {
+    display: none;
+    border-top: 1px solid var(--border);
+}
+
+.procurement-card.open .procurement-detail { display: block; }
+
 /* ===== ボトムナビゲーション ===== */
 .bottom-nav {
     position: fixed;
