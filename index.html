@@ -14,10 +14,18 @@
 </header>
 
 <main class="tab-content">
-    <!-- タブ1: 入力設定 -->
+    <!-- タブ1: 入力 -->
     <section id="tab-input" class="tab-panel active">
         <div class="panel">
-            <h2>1. カット寸法設定 (mm)</h2>
+            <h2>建具種別</h2>
+            <div class="input-group">
+                <select id="typeSelect" onchange="onTypeChange()">
+                    <option value="建具">建具</option>
+                    <option value="家具">家具</option>
+                </select>
+            </div>
+
+            <h2>カット寸法 (mm)</h2>
             <div class="input-row input-row-3">
                 <div class="input-group">
                     <label>高さ (H)</label>
@@ -28,45 +36,12 @@
                     <input type="number" inputmode="decimal" id="w" value="900" oninput="calculate()">
                 </div>
                 <div class="input-group">
-                    <label>芯材 厚み (D)</label>
+                    <label>厚み (D)</label>
                     <input type="number" inputmode="decimal" id="d" value="30" oninput="calculate()">
                 </div>
             </div>
 
-            <h2>2. 芯材設定 (mm)</h2>
-            <div class="input-group">
-                <label>建具種別</label>
-                <select id="typeSelect" onchange="onTypeChange()">
-                    <option value="建具">建具</option>
-                    <option value="家具">家具</option>
-                </select>
-            </div>
-            <div class="input-row input-row-2">
-                <div class="input-group">
-                    <label id="lvlLabel">縦桟/上下桟 幅 (LVL)</label>
-                    <input type="number" inputmode="decimal" id="lvlWidth" value="35" oninput="updateDefaultNukiCount(); calculate()">
-                </div>
-                <div class="input-group">
-                    <label>中桟 幅</label>
-                    <input type="number" inputmode="decimal" id="nukiWidth" value="24" oninput="calculate()">
-                </div>
-            </div>
-            <div class="input-row input-row-2">
-                <div class="input-group">
-                    <label>中桟本数</label>
-                    <input type="number" inputmode="numeric" id="nukiCount" value="5" min="0" oninput="calculate()">
-                </div>
-                <div class="input-group">
-                    <label id="boardLenLabel">LVL 定尺長さ</label>
-                    <input type="number" inputmode="decimal" id="boardLen" value="2120" oninput="calculate()">
-                </div>
-            </div>
-            <div class="input-group">
-                <label>中桟材 定尺長さ</label>
-                <input type="number" inputmode="decimal" id="nukiBoardLen" value="900" oninput="calculate()">
-            </div>
-
-            <h2>3. 補強オプション</h2>
+            <h2>補強オプション</h2>
             <div class="input-group checkbox-group">
                 <input type="checkbox" id="optHikite" checked onchange="calculate()">
                 <label id="optHikiteLabel" for="optHikite">引手補強 (左右各2本/H900芯)</label>
@@ -156,14 +131,49 @@
             </div>
         </div>
     </section>
+
+    <!-- タブ3: 芯材設定 -->
+    <section id="tab-config" class="tab-panel">
+        <div class="panel">
+            <h2>芯材寸法 (mm)</h2>
+            <div class="input-row input-row-2">
+                <div class="input-group">
+                    <label id="lvlLabel">縦桟/上下桟 幅 (LVL)</label>
+                    <input type="number" inputmode="decimal" id="lvlWidth" value="35" oninput="updateDefaultNukiCount(); calculate()">
+                </div>
+                <div class="input-group">
+                    <label>中桟 幅</label>
+                    <input type="number" inputmode="decimal" id="nukiWidth" value="24" oninput="calculate()">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>中桟本数</label>
+                <input type="number" inputmode="numeric" id="nukiCount" value="5" min="0" oninput="calculate()">
+            </div>
+
+            <h2>定尺長さ (mm)</h2>
+            <div class="input-row input-row-2">
+                <div class="input-group">
+                    <label id="boardLenLabel">LVL 定尺</label>
+                    <input type="number" inputmode="decimal" id="boardLen" value="2120" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>中桟材 定尺</label>
+                    <input type="number" inputmode="decimal" id="nukiBoardLen" value="900" oninput="calculate()">
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
 
 <!-- ボトムナビゲーション -->
 <nav class="bottom-nav">
     <button class="nav-item active" id="nav-input" onclick="switchTab('input')">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/>
-            <line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/>
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <line x1="9" y1="9" x2="15" y2="9"/>
+            <line x1="9" y1="13" x2="15" y2="13"/>
+            <line x1="9" y1="17" x2="12" y2="17"/>
         </svg>
         <span>入力</span>
     </button>
@@ -173,6 +183,13 @@
             <polyline points="8,12 11,15 16,9"/>
         </svg>
         <span>結果</span>
+    </button>
+    <button class="nav-item" id="nav-config" onclick="switchTab('config')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span>設定</span>
     </button>
 </nav>
 

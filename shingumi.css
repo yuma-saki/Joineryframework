@@ -370,14 +370,14 @@ canvas {
 
 .nav-item.active .nav-icon { stroke-width: 2.2; }
 
-/* ===== デスクトップ対応 (横幅広い場合は2カラム) ===== */
+/* ===== デスクトップ対応 (769px以上は3カラム) ===== */
 @media (min-width: 769px) {
     .tab-content {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: var(--header-height) auto 0;
-        padding: 20px 20px calc(var(--nav-height) + 20px);
+        padding: 20px 20px 20px;
         display: grid;
-        grid-template-columns: 380px 1fr;
+        grid-template-columns: 300px 1fr 280px;
         gap: 20px;
         align-items: start;
     }
