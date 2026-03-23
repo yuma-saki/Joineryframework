@@ -35,7 +35,7 @@ function onTypeChange() {
 
     if (type === '建具') {
         lvlLabel.textContent = '縦桟/上下桟 幅 (LVL)';
-        lvlWidth.value = 35;
+        lvlWidth.value = 35.5;
         boardLenLabel.textContent = 'LVL 定尺長さ';
         boardLenInput.value = 2120;
         optLabel.textContent = '引手補強 (左右各2本/H900芯)';
@@ -98,8 +98,8 @@ function calculate() {
     ].filter(Boolean).join(' / ');
     list.push({ name: `縦桟 (${mat})`, len: tateSanLen, qty: tateSanQty, note: tateSanNote });
 
-    // 2. 上下桟
-    const yokoLen = W - (LVL * 2);
+    // 2. 上下桟 — ダブル縦桟時は左右各2本ぶん(LVL*4)を引いた内寸
+    const yokoLen = tateSanDouble ? W - (LVL * 4) : W - (LVL * 2);
     if (tsurido) {
         // 上桟: 中入れ / 下桟: 横勝ち (全幅)
         list.push({ name: `上桟 (${mat})`, len: yokoLen, qty: 1, note: "上部 (中入れ材)" });
@@ -122,7 +122,7 @@ function calculate() {
 
     // 吊り戸車上端補強: 120mm × 左右各2本 = 4本
     if (tsurido) {
-        list.push({ name: `吊り戸車上端補強 (${mat})`, len: 120, qty: 4, note: "上端左右各2本" });
+        list.push({ name: `吊り戸用上端補強 (${mat})`, len: 120, qty: 4, note: "上端左右各2本" });
     }
 
     // 4. 中桟 — 本数指定・等間隔センター配置
@@ -295,72 +295,72 @@ function drawDoor(H, W, LVL, NUKI, nukiPositions, hikite, hTop, hLen, royal, tsu
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.translate(20, 20);
 
-    // 縦桟 — 吊り戸車時は下桟が横勝ちなのでLVL分短く描く
-    ctx.fillStyle = "#ddd";
+    // 縦桟 — ダブル時は2倍幅で描画、吊り戸車時は下桟横勝ちなのでLVL分短縮
+    const stileW = tateSanDouble ? LVL * 2 : LVL;
     const tateSanH = tsurido ? H - LVL : H;
-    ctx.fillRect(0, 0, LVL * scale, tateSanH * scale);
-    ctx.fillRect((W - LVL) * scale, 0, LVL * scale, tateSanH * scale);
+    ctx.fillStyle = "#ddd";
+    ctx.fillRect(0, 0, stileW * scale, tateSanH * scale);
+    ctx.fillRect((W - stileW) * scale, 0, stileW * scale, tateSanH * scale);
 
     // 縦桟ダブル: 中央に仕切り線を描いて2本組を示す
     if (tateSanDouble) {
         ctx.strokeStyle = "#aaa";
         ctx.lineWidth = 1;
-        const midX = LVL * scale / 2;
         ctx.beginPath();
-        ctx.moveTo(midX, 0); ctx.lineTo(midX, tateSanH * scale);
+        ctx.moveTo(LVL * scale, 0); ctx.lineTo(LVL * scale, tateSanH * scale);
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo((W - LVL) * scale + midX, 0); ctx.lineTo((W - LVL) * scale + midX, tateSanH * scale);
+        ctx.moveTo((W - LVL) * scale, 0); ctx.lineTo((W - LVL) * scale, tateSanH * scale);
         ctx.stroke();
     }
 
-    // 上桟 (常に中入れ)
+    // 上桟 (常に中入れ、縦桟幅ぶん内側から)
     ctx.fillStyle = "#ccc";
-    ctx.fillRect(LVL * scale, 0, (W - LVL * 2) * scale, LVL * scale);
+    ctx.fillRect(stileW * scale, 0, (W - stileW * 2) * scale, LVL * scale);
 
-    // 下桟 — 吊り戸車: 横勝ち(全幅) / 通常: 中入れ
+    // 下桟 — 吊り戸用: 横勝ち(全幅) / 通常: 中入れ
     if (tsurido) {
         ctx.fillStyle = "#a8d5b5";
         ctx.fillRect(0, (H - LVL) * scale, W * scale, LVL * scale);
     } else {
         ctx.fillStyle = "#ccc";
-        ctx.fillRect(LVL * scale, (H - LVL) * scale, (W - LVL * 2) * scale, LVL * scale);
+        ctx.fillRect(stileW * scale, (H - LVL) * scale, (W - stileW * 2) * scale, LVL * scale);
     }
 
     // ロイヤル補強: 2枚目の上下桟を重ねる
     if (royal) {
         ctx.fillStyle = "rgba(39, 174, 96, 0.45)";
-        ctx.fillRect(LVL * scale, LVL * scale, (W - LVL * 2) * scale, LVL * scale);
-        ctx.fillRect(LVL * scale, (H - LVL * 2) * scale, (W - LVL * 2) * scale, LVL * scale);
+        ctx.fillRect(stileW * scale, LVL * scale, (W - stileW * 2) * scale, LVL * scale);
+        ctx.fillRect(stileW * scale, (H - LVL * 2) * scale, (W - stileW * 2) * scale, LVL * scale);
     }
 
-    // 引手補強
+    // 引手補強 (縦桟内側から配置)
     if (hikite) {
         ctx.fillStyle = "rgba(230, 126, 34, 0.6)";
-        ctx.fillRect(LVL * scale, hTop * scale, LVL * scale * 2, hLen * scale);
-        ctx.fillRect((W - LVL * 3) * scale, hTop * scale, LVL * scale * 2, hLen * scale);
+        ctx.fillRect(stileW * scale, hTop * scale, LVL * scale * 2, hLen * scale);
+        ctx.fillRect((W - stileW - LVL * 2) * scale, hTop * scale, LVL * scale * 2, hLen * scale);
     }
 
-    // 吊り戸車上端補強: 120mm × 左右各2本を上端内側に描画
+    // 吊り戸用上端補強: 120mm × 左右各2本を横向きで描画 (上端内側、縦桟の右/左に密着)
     if (tsurido) {
         ctx.fillStyle = "rgba(52, 152, 219, 0.55)";
-        const reinH = 120 * scale;
-        const reinW = LVL * scale;
-        // 左側 2本 (横並び)
-        ctx.fillRect(LVL * scale, LVL * scale, reinW, reinH);
-        ctx.fillRect(LVL * scale * 2, LVL * scale, reinW, reinH);
-        // 右側 2本
-        ctx.fillRect((W - LVL * 3) * scale, LVL * scale, reinW, reinH);
-        ctx.fillRect((W - LVL * 2) * scale, LVL * scale, reinW, reinH);
+        const reinLen = 120 * scale; // 横方向 120mm
+        const reinThk = LVL * scale; // 縦方向 = 縦桟幅
+        // 左側: 2本縦積み
+        ctx.fillRect(stileW * scale, LVL * scale, reinLen, reinThk);
+        ctx.fillRect(stileW * scale, (LVL * 2) * scale, reinLen, reinThk);
+        // 右側: 2本縦積み
+        ctx.fillRect((W - stileW) * scale - reinLen, LVL * scale, reinLen, reinThk);
+        ctx.fillRect((W - stileW) * scale - reinLen, (LVL * 2) * scale, reinLen, reinThk);
     }
 
-    // 中桟
+    // 中桟 (縦桟内側から配置)
     ctx.fillStyle = "#bbb";
     for (const y of nukiPositions) {
         if (hikite && y >= hTop && y <= (hTop + hLen)) {
-            ctx.fillRect((LVL * 3) * scale, y * scale, (W - LVL * 6) * scale, NUKI * scale);
+            ctx.fillRect((stileW + LVL * 2) * scale, y * scale, (W - stileW * 2 - LVL * 4) * scale, NUKI * scale);
         } else {
-            ctx.fillRect(LVL * scale, y * scale, (W - LVL * 2) * scale, NUKI * scale);
+            ctx.fillRect(stileW * scale, y * scale, (W - stileW * 2) * scale, NUKI * scale);
         }
     }
 
