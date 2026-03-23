@@ -59,6 +59,7 @@ function calculate() {
     const LVL = parseFloat(document.getElementById('lvlWidth').value) || 0;
     const NUKI = parseFloat(document.getElementById('nukiWidth').value) || 0;
     const N = parseInt(document.getElementById('nukiCount').value) || 0;
+    const QTY = Math.max(1, parseInt(document.getElementById('qty').value) || 1);
     const optChecked = document.getElementById('optHikite').checked;
     const type = document.getElementById('typeSelect').value;
     const mat = type === '建具' ? 'LVL' : 'ランバー';
@@ -76,7 +77,8 @@ function calculate() {
     const W = rawW + 10;
 
     document.getElementById('calcSummary').innerHTML =
-        `<strong>カット寸法:</strong> 高 ${rawH}mm × 幅 ${rawW}mm<br>` +
+        `<strong>カット寸法:</strong> 高 ${rawH}mm × 幅 ${rawW}mm` +
+        (QTY > 1 ? ` <strong style="color:var(--accent)">× ${QTY}枚</strong>` : '') + `<br>` +
         `<strong>芯の製作寸法:</strong> 高 ${H}mm × 幅 ${W}mm`;
 
     const list = [];
@@ -136,6 +138,9 @@ function calculate() {
     if (shortNukiQty > 0) {
         list.push({ name: "中桟 (貫) 短尺", len: shortNukiLen.toFixed(1), qty: shortNukiQty, note: `ピッチ: 約${realPitch.toFixed(1)}mm (引手干渉)` });
     }
+
+    // 枚数分だけ本数を掛ける (大きいものから順に並べて手配効率を最大化)
+    list.forEach(item => { item.qty *= QTY; });
 
     renderTable(list);
     renderProcurement(list, boardLen, nukiBoardLen, type);
